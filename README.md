@@ -1,206 +1,196 @@
-# Portfolio Tracker PWA
+# 🚀 Optimus Trading - Arquitetura Serverless
 
-Um aplicativo PWA profissional para acompanhamento de carteira de ações com design vaporwave e atualização em tempo real.
+## 📋 Nova Implementação
 
-## ✨ Características
+**Migração completa para Netlify Functions** - Solução 100% serverless que resolve todos os problemas CORS!
 
-- 📱 **PWA (Progressive Web App)** - Instale no seu dispositivo
-- 🎨 **Design Vaporwave** - Interface moderna com fundo preto e cores neon
-- 📊 **Tempo Real** - Cotações atualizadas automaticamente
-- 🔥 **Firebase** - Autenticação e banco de dados
-- 📈 **P&L Tracking** - Acompanhe seus ganhos e perdas
-- 💰 **Múltiplas Fontes** - Yahoo Finance + Alpha Vantage como backup
+### **🏗️ Arquitetura**
 
-## 🚀 Tecnologias
-
-- HTML5, CSS3, JavaScript ES6+
-- Firebase (Auth + Firestore)
-- Service Worker para funcionalidade offline
-- API de cotações em tempo real
-
-## 📋 Pré-requisitos
-
-1. **Conta Firebase**: Crie um projeto em https://console.firebase.google.com
-2. **Servidor HTTP**: Para servir o PWA localmente
-
-## ⚙️ Configuração
-
-### 1. Firebase Setup
-
-1. Crie um projeto no Firebase Console
-2. Ative Authentication (Email/Password)
-3. Ative Firestore Database
-4. Obtenha as credenciais do projeto
-5. Substitua as configurações em `js/firebase-config.js`:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "seu-projeto.firebaseapp.com",
-  projectId: "seu-projeto-id",
-  storageBucket: "seu-projeto.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123def456"
-};
+```
+📁 netlify-serverless/
+├── 📄 netlify.toml           # Configuração Netlify
+├── 📄 package.json           # Dependências Node.js
+├── 📁 netlify/
+│   └── 📁 functions/         # Netlify Functions (Backend)
+│       ├── 📄 health.js      # Health check
+│       ├── 📄 stock.js       # Cotação individual
+│       ├── 📄 stocks.js      # Cotações múltiplas (carteira)
+│       ├── 📄 cache-clear.js # Limpar cache
+│       └── 📁 utils/
+│           └── 📄 helpers.js # Utilitários compartilhados
+└── 📁 public/                # Frontend (PWA)
+    ├── 📄 index.html         # App principal
+    ├── 📄 manifest.json      # PWA manifest
+    ├── 📄 sw.js              # Service Worker
+    ├── 📁 js/                # JavaScript modules
+    ├── 📁 css/               # Styles vaporwave
+    └── 📁 icons/             # PWA icons
 ```
 
-### 2. Regras do Firestore
+### **✨ Principais Vantagens**
 
-Configure as regras de segurança no Firestore:
+1. **🎯 Zero CORS**: Functions no mesmo domínio
+2. **⚡ Performance**: CDN global Netlify
+3. **💰 Custo Zero**: Tier gratuito generoso
+4. **🔄 Deploy Automático**: Git push → deploy
+5. **📈 Escalabilidade**: Auto-scaling serverless
+6. **🛡️ Segurança**: Headers de segurança automáticos
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /portfolio/{document} {
-      allow read, write: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
-    }
-  }
-}
+### **🔧 Como Fazer Deploy**
+
+#### **1. Preparar Repositório**
+```bash
+# Navegar para a pasta serverless
+cd netlify-serverless
+
+# Inicializar git (se necessário)
+git init
+git add .
+git commit -m "feat: Optimus Trading Serverless Architecture"
+
+# Criar repositório no GitHub
+# Nome sugerido: optimus-trading-serverless
+git remote add origin https://github.com/brunocflores/optimus-trading-serverless.git
+git branch -M main
+git push -u origin main
 ```
 
-### 3. Executar Localmente
+#### **2. Deploy no Netlify**
+
+**Opção A: Via Interface Web**
+1. Acesse [netlify.com](https://netlify.com)
+2. **Add new site** → **Import an existing project**
+3. Conecte com GitHub → Selecione o repositório
+4. **Build settings**:
+   - Build command: `npm run build`
+   - Publish directory: `public`
+   - Functions directory: `netlify/functions`
+5. **Deploy site**
+
+**Opção B: Via Netlify CLI**
+```bash
+# Instalar Netlify CLI globalmente
+npm install -g netlify-cli
+
+# Login no Netlify
+netlify login
+
+# Deploy
+netlify deploy --prod
+```
+
+#### **3. Configurar Domínio (Opcional)**
+- **Subdomain**: `optimus-trading.netlify.app`
+- **Custom domain**: `optimus.brunocflores.com`
+
+### **🧪 Como Testar Local**
 
 ```bash
-# Instalar dependências (opcional)
+# Instalar dependências
 npm install
 
-# Servir o aplicativo (usando http-server)
-npm start
-
-# Ou use qualquer servidor HTTP
-python -m http.server 3000
+# Iniciar servidor de desenvolvimento
+npm run dev
 # ou
-python3 -m http.server 3000
+netlify dev
+
+# Acesse: http://localhost:8888
 ```
 
-Acesse: http://localhost:3000
+### **📊 Endpoints da API**
 
-## 📱 Instalação como PWA
+| Endpoint | Método | Descrição |
+|----------|--------|-----------|
+| `/api/health` | GET | Health check |
+| `/api/stock/{symbol}` | GET | Cotação individual |
+| `/api/stocks?symbols=X,Y,Z` | GET | Cotações múltiplas |
+| `/api/cache-clear` | DELETE | Limpar cache |
 
-1. Abra o app no navegador
-2. O navegador solicitará para instalar
-3. Clique em "Instalar" para adicionar à tela inicial
-
-## 🎨 Design Vaporwave
-
-- **Fundo**: Preto com gradientes neon
-- **Cores**: Rosa (#ff007f), Ciano (#00ffff), Roxo (#8a2be2), Amarelo (#ffff00)
-- **Tipografia**: Orbitron (títulos) + Roboto Mono (corpo)
-- **Efeitos**: Sombras neon, animações suaves, hover effects
-
-## 📊 Funcionalidades
-
-### Dashboard Principal
-- P&L Total em tempo real
-- Valor investido vs. valor atual
-- Quantidade de ações em carteira
-- Status do mercado (aberto/fechado)
-
-### Gestão de Carteira
-- Adicionar/remover ações
-- Agrupamento automático por código
-- Cálculo de preço médio
-- P&L individual e percentual
-
-### Cotações em Tempo Real
-- Yahoo Finance (principal)
-- Alpha Vantage (backup)
-- Preços mock para desenvolvimento
-- Atualização automática a cada 30 segundos
-
-## 🏗️ Estrutura do Projeto
-
-```
-portfolio-tracker/
-├── index.html              # Página principal
-├── manifest.json           # Configuração PWA
-├── sw.js                   # Service Worker
-├── css/
-│   └── styles.css          # Estilos vaporwave
-├── js/
-│   ├── app.js              # Aplicação principal
-│   ├── auth.js             # Gerenciamento de autenticação
-│   ├── portfolio.js        # Gestão de carteira
-│   ├── stock-api.js        # APIs de cotação
-│   └── firebase-config.js  # Configuração Firebase
-├── icons/                  # Ícones PWA (precisa ser criado)
-└── package.json           # Dependências
-```
-
-## 🔑 APIs de Cotação
-
-### Yahoo Finance (Principal)
-- Gratuita
-- Dados em tempo real
-- Suporte a ações brasileiras (.SA)
-
-### Alpha Vantage (Backup)
-- Requer API key gratuita
-- Limite de requisições
-- Configure em `stock-api.js`
-
-### Dados Mock
-- Para desenvolvimento/teste
-- Variações aleatórias baseadas em preços reais
-- Ativo quando APIs falham
-
-## 📱 Responsividade
-
-- Design mobile-first
-- Breakpoints: 768px (tablet/desktop)
-- Interface adaptada para touch
-- PWA instalável em dispositivos móveis
-
-## 🚀 Deploy
-
-### GitHub Pages
-```bash
-npm run deploy
-```
-
-### Netlify/Vercel
-1. Conecte o repositório
-2. Build command: `npm run build`
-3. Deploy directory: `.` (root)
-
-### Firebase Hosting
-```bash
-firebase init hosting
-firebase deploy
-```
-
-## 🛠️ Desenvolvimento
-
-### Estrutura de Dados (Firestore)
+### **🔍 Como Testar**
 
 ```javascript
-// Collection: portfolio
-{
-  userId: "user-uid",
-  symbol: "PETR4",
-  quantity: 100,
-  purchasePrice: 35.50,
-  purchaseDate: "2023-01-15",
-  createdAt: "2023-01-15T10:00:00Z"
-}
+// No console do navegador (F12)
+
+// Teste conectividade
+apiConfig.testConnectivity()
+
+// Teste cotação
+apiConfig.testStockAPI()
+
+// Info da plataforma
+apiConfig.getPlatformInfo()
+
+// Teste manual
+fetch('/api/health').then(r => r.json()).then(console.log)
+fetch('/api/stock/PETR4').then(r => r.json()).then(console.log)
+fetch('/api/stocks?symbols=PETR4,VALE3').then(r => r.json()).then(console.log)
 ```
 
-### Adicionando Novas Features
+### **📈 Monitoramento**
 
-1. **Nova tela**: Adicione ao `index.html` e gerencie visibilidade
-2. **Nova funcionalidade**: Estenda as classes em `js/`
-3. **Novos estilos**: Adicione ao `css/styles.css` seguindo as variáveis CSS
+- **Functions**: Dashboard Netlify → Functions
+- **Analytics**: Dashboard Netlify → Analytics
+- **Logs**: `netlify functions:log`
+- **Performance**: Lighthouse integrado
 
-## 📧 Suporte
+### **🔧 Configurações Avançadas**
 
-Para dúvidas ou sugestões, abra uma issue no repositório.
+#### **Environment Variables (se necessário)**
+```bash
+# Via Netlify CLI
+netlify env:set API_KEY "your-api-key"
 
-## 📄 Licença
+# Via Dashboard
+Site settings → Environment variables
+```
 
-MIT License - veja LICENSE para detalhes.
+#### **Custom Headers**
+Já configurado no `netlify.toml`:
+- CORS headers
+- Security headers
+- Cache headers
+
+#### **Redirects e Proxies**
+```toml
+# netlify.toml
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+```
+
+### **🚀 URLs Finais**
+
+Após deploy, você terá:
+- **Frontend**: `https://optimus-trading.netlify.app`
+- **API**: `https://optimus-trading.netlify.app/api/`
+- **Health**: `https://optimus-trading.netlify.app/api/health`
+
+### **⚡ Performance**
+
+- **Cold start**: ~100-300ms
+- **Warm requests**: ~20-50ms
+- **Cache TTL**: 10 minutos
+- **CDN**: Edge locations globais
+
+### **💾 Backup dos Dados**
+
+- **Firebase**: Dados do usuário (portfolio, trades)
+- **Functions**: Stateless (sem dados persistentes)
+- **Cache**: In-memory (reseta a cada deploy)
 
 ---
 
-**🌟 Portfolio Tracker - Acompanhe seus investimentos com estilo!**
+## 🎯 **Próximos Passos**
+
+1. ✅ **Deploy** no Netlify
+2. ✅ **Testar** todas as funcionalidades
+3. ✅ **Configurar** domínio personalizado
+4. ✅ **Monitorar** performance e erros
+5. ✅ **Otimizar** conforme necessário
+
+**🎮 Arquitetura Serverless Completa e Pronta para Produção!**
+
+---
+
+*Última atualização: 18/09/2025 - Migração para Netlify Functions*
