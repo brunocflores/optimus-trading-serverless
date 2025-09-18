@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Optimus Trading</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="login-screen" class="screen">
+            <div class="container">
+                <h1 class="logo">Optimus<span class="gradient-text">Trading</span></h1>
+                <form id="login-form" class="auth-form">
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Senha" required>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                    <p class="auth-switch">Não tem conta? <a href="#" id="show-register">Registrar</a></p>
+                </form>
+                
+                <form id="register-form" class="auth-form hidden">
+                    <input type="text" id="register-name" placeholder="Nome" required>
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <input type="password" id="register-password" placeholder="Senha" required>
+                    <button type="submit" class="btn-primary">Registrar</button>
+                    <p class="auth-switch">Já tem conta? <a href="#" id="show-login">Entrar</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="portfolio-screen" class="screen hidden">
+            <header class="header">
+                <h1 class="logo">Optimus<span class="gradient-text">Trading</span></h1>
+                <nav class="nav-tabs">
+                    <button id="swing-trade-tab" class="nav-tab active">Swing Trade</button>
+                    <button id="day-trade-tab" class="nav-tab">Day Trade</button>
+                    <button id="capital-evolution-tab" class="nav-tab">Evolução do Capital</button>
+                </nav>
+                <button id="logout-btn" class="btn-secondary">Sair</button>
+            </header>
+
+            <main class="main-content">
+                <!-- Swing Trade Section -->
+                <div id="swing-trade-content" class="trade-content">
+                    <div class="stats-grid">
+                        <div class="stat-card positive">
+                            <div class="stat-title">P&L Total</div>
+                            <div class="stat-value" id="total-pnl">R$ 0,00</div>
+                            <div class="stat-change" id="pnl-change">+0,00%</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">P&L Realizado</div>
+                            <div class="stat-value" id="realized-pnl">R$ 0,00</div>
+                            <div class="stat-subtitle">Vendas Concluídas</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Valor Investido</div>
+                            <div class="stat-value" id="total-invested">R$ 0,00</div>
+                            <div class="stat-subtitle">Capital Total</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Ações em Carteira</div>
+                            <div class="stat-value" id="total-stocks">0</div>
+                            <div class="stat-subtitle">Posições Ativas</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Valor Atual</div>
+                            <div class="stat-value" id="current-value">R$ 0,00</div>
+                            <div class="stat-subtitle">Patrimônio Total</div>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-section">
+                        <div class="section-header">
+                            <h2>Minha Carteira</h2>
+                            <button id="add-stock-btn" class="btn-primary btn-small">+ Adicionar Ação</button>
+                        </div>
+
+                        <div id="portfolio-list" class="portfolio-list">
+                            <div class="loading-message">Carregando carteira...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day Trade Section -->
+                <div id="day-trade-content" class="trade-content hidden">
+                    <div class="day-trade-controls">
+                        <div class="month-filter">
+                            <label for="month-select">Filtrar por mês:</label>
+                            <input type="month" id="month-select" class="month-input">
+                        </div>
+                    </div>
+
+                    <div class="stats-grid day-trade-stats">
+                        <div class="stat-card">
+                            <div class="stat-title">P&L Realizado</div>
+                            <div class="stat-value" id="day-trade-pnl">R$ 0,00</div>
+                            <div class="stat-subtitle">Total do Período</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Operações</div>
+                            <div class="stat-value" id="day-trade-ops">0</div>
+                            <div class="stat-subtitle">Total de Trades</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Win/Loss</div>
+                            <div class="stat-value" id="day-trade-winrate">0%</div>
+                            <div class="stat-subtitle">Taxa de Acerto</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Resultado do Mês</div>
+                            <div class="stat-value" id="month-result">R$ 0,00</div>
+                            <div class="stat-subtitle">Performance Mensal</div>
+                        </div>
+                    </div>
+
+                    <div class="trades-section">
+                        <div class="section-header">
+                            <h2>Day Trades</h2>
+                            <button id="add-trade-btn" class="btn-primary btn-small">+ Adicionar Trade</button>
+                        </div>
+
+                        <div id="trades-table-container" class="trades-table-container">
+                            <table id="trades-table" class="trades-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Ativo</th>
+                                        <th>Operação</th>
+                                        <th>Resultado</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trades-table-body">
+                                    <tr>
+                                        <td colspan="5" class="loading-message">Nenhum trade encontrado para este período</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capital Evolution Section -->
+                <div id="capital-evolution-content" class="trade-content hidden">
+                    <div class="evolution-controls">
+                        <div class="period-filter">
+                            <label for="period-select">Período:</label>
+                            <select id="period-select" class="period-input">
+                                <option value="6">Últimos 6 meses</option>
+                                <option value="12" selected>Último ano</option>
+                                <option value="24">Últimos 2 anos</option>
+                                <option value="all">Todo período</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <div class="section-header">
+                            <h2>Evolução do Capital</h2>
+                            <div class="chart-stats">
+                                <span class="stat-item">
+                                    <span class="stat-label">Capital Inicial:</span>
+                                    <span id="initial-capital" class="stat-value">R$ 0,00</span>
+                                </span>
+                                <span class="stat-item">
+                                    <span class="stat-label">Capital Atual:</span>
+                                    <span id="current-capital" class="stat-value">R$ 0,00</span>
+                                </span>
+                                <span class="stat-item">
+                                    <span class="stat-label">Crescimento:</span>
+                                    <span id="capital-growth" class="stat-value">0%</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="capital-chart"></canvas>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color swing-trade"></div>
+                                <span>Swing Trade (P&L Realizado)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color day-trade"></div>
+                                <span>Day Trade (P&L Mensal)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color total-capital"></div>
+                                <span>Capital Total Acumulado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="add-stock-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Adicionar Ação</h3>
+                    <button id="close-modal" class="close-btn">&times;</button>
+                </div>
+                <form id="add-stock-form">
+                    <input type="text" id="stock-symbol" placeholder="Código da Ação (ex: PETR4)" required>
+                    <input type="number" id="stock-quantity" placeholder="Quantidade" step="1" min="1" required>
+                    <input type="number" id="stock-price" placeholder="Preço de Compra" step="0.01" min="0.01" required>
+                    <input type="date" id="stock-date" required>
+                    <div class="modal-buttons">
+                        <button type="button" id="cancel-add" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">Adicionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="sell-stock-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Vender Ação</h3>
+                    <button id="close-sell-modal" class="close-btn">&times;</button>
+                </div>
+                <form id="sell-stock-form">
+                    <input type="text" id="sell-stock-symbol" placeholder="Código da Ação" readonly>
+                    <input type="number" id="sell-quantity" placeholder="Quantidade a Vender" step="1" min="1" required>
+                    <input type="number" id="sell-price" placeholder="Preço de Venda" step="0.01" min="0.01" required>
+                    <input type="date" id="sell-date" required>
+                    <div class="stock-info-display">
+                        <p>Quantidade disponível: <span id="available-quantity">0</span></p>
+                        <p>Preço médio de compra: <span id="avg-purchase-price">R$ 0,00</span></p>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" id="cancel-sell" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">Vender</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="add-trade-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Adicionar Day Trade</h3>
+                    <button id="close-trade-modal" class="close-btn">&times;</button>
+                </div>
+                <form id="add-trade-form">
+                    <input type="date" id="trade-date" required>
+                    <input type="text" id="trade-symbol" placeholder="Ativo (ex: PETR4)" required>
+                    <select id="trade-operation" required>
+                        <option value="">Selecione a operação</option>
+                        <option value="compra">Compra</option>
+                        <option value="venda">Venda</option>
+                    </select>
+                    <input type="number" id="trade-result" placeholder="Resultado (R$)" step="0.01" required>
+                    <div class="modal-buttons">
+                        <button type="button" id="cancel-trade" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">Adicionar Trade</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js CDN - Load before modules -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+
+    <!-- Wait for Chart.js to load before loading modules -->
+    <script>
+        window.addEventListener('load', () => {
+            console.log('📊 Chart.js loaded:', typeof Chart !== 'undefined');
+
+            // Load app module after Chart.js is available
+            import('./js/app.js').then(() => {
+                console.log('✅ App modules loaded');
+            }).catch(error => {
+                console.error('❌ Error loading app modules:', error);
+            });
+        });
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(registrationError => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</body>
+</html>
